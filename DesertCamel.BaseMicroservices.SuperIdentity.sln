@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30114.105
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DesertCamel.BaseMicroservices.SuperIdentity", "DesertCamel.BaseMicroservices.SuperIdentity\DesertCamel.BaseMicroservices.SuperIdentity.csproj", "{A30741E4-E18D-4BB4-B263-78B1C9364967}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A30741E4-E18D-4BB4-B263-78B1C9364967}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A30741E4-E18D-4BB4-B263-78B1C9364967}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A30741E4-E18D-4BB4-B263-78B1C9364967}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A30741E4-E18D-4BB4-B263-78B1C9364967}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
