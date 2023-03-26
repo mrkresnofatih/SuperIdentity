@@ -94,10 +94,10 @@ namespace DesertCamel.BaseMicroservices.SuperIdentity.Services.PermissionService
             try
             {
                 _logger.LogInformation($"Start GetPermission w. data: {getRequest.ToJson()}");
-                var foundPermission = _superCognitoDbContext
+                var foundPermission = await _superCognitoDbContext
                     .Permissions
                     .Where(x => x.Name.Equals(getRequest.Name))
-                    .FirstOrDefault();
+                    .FirstOrDefaultAsync();
                 if (foundPermission == null)
                 {
                     throw new Exception("permission for get op is not found");

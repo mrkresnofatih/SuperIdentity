@@ -4,8 +4,6 @@ namespace DesertCamel.BaseMicroservices.SuperIdentity.Models.ResourceService
 {
     public class ResourceCreateRequestModel
     {
-        [Required]
-        public Guid RoleId { get; set; }
 
         [Required]
         [MaxLength(50)]

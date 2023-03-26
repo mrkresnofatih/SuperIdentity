@@ -4,13 +4,12 @@ namespace DesertCamel.BaseMicroservices.SuperIdentity.Models.ResourceService
 {
     public class ResourceListRequestModel
     {
-        [Required]
-        public Guid RoleId { get; set; }
-
         public string Name { get; set; }
 
+        [Required]
         public long Page { get; set; }
 
+        [Required]
         public long PageSize { get; set; }
     }
 }

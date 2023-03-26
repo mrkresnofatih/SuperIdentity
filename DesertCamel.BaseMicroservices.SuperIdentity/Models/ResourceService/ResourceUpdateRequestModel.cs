@@ -1,11 +1,13 @@
-﻿namespace DesertCamel.BaseMicroservices.SuperIdentity.Models.ResourceService
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace DesertCamel.BaseMicroservices.SuperIdentity.Models.ResourceService
 {
     public class ResourceUpdateRequestModel
     {
-        public string ResourceName { get; set; }
+        [Required]
+        public string Name { get; set; }
 
-        public Guid RoleId { get; set; }
-
+        [Required]
         public string Description { get; set; }
     }
 }
