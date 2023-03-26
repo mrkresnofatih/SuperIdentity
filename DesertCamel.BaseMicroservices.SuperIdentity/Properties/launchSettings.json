@@ -9,7 +9,7 @@
     }
   },
   "profiles": {
-    "DesertCamel.BaseMicroservices.SuperCognito": {
+    "DesertCamel.BaseMicroservices.SuperIdentity": {
       "commandName": "Project",
       "applicationUrl": "http://localhost:5068",
       "environmentVariables": {

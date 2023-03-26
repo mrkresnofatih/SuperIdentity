@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DesertCamel.BaseMicroservices.SuperIdentity.EntityFramework
 {
-    public class SuperCognitoDbContext : DbContext
+    public class SuperIdentityDbContext : DbContext
     {
-        public SuperCognitoDbContext(DbContextOptions options) : base(options)
+        public SuperIdentityDbContext(DbContextOptions options) : base(options)
         {
         }
 

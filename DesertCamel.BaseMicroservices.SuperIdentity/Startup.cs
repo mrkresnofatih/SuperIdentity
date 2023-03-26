@@ -19,7 +19,7 @@ namespace DesertCamel.BaseMicroservices.SuperIdentity
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSuperCognitoDbContext(Configuration);
+            services.AddSuperIdentityDbContext(Configuration);
             services.AddControllers();
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
@@ -41,7 +41,7 @@ namespace DesertCamel.BaseMicroservices.SuperIdentity
                 app.UseSwaggerUI();
             }
 
-            app.RunSuperCognitoDbMigration(Configuration);
+            app.RunSuperIdentityDbMigration(Configuration);
 
             app.UseRouting();
             app.UseSuperCognitoCorsPolicy();

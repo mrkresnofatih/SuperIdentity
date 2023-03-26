@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace DesertCamel.BaseMicroservices.SuperIdentity.Migrations.Postgres
 {
-    public partial class init_db_supercognito : Migration
+    public partial class init_superidentity_db : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

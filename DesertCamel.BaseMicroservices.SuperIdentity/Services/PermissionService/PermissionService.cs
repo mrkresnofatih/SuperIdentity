@@ -9,11 +9,11 @@ namespace DesertCamel.BaseMicroservices.SuperIdentity.Services.PermissionService
 {
     public class PermissionService : IPermissionService
     {
-        private readonly SuperCognitoDbContext _superCognitoDbContext;
+        private readonly SuperIdentityDbContext _superCognitoDbContext;
         private readonly ILogger<PermissionService> _logger;
 
         public PermissionService(
-            SuperCognitoDbContext superCognitoDbContext,
+            SuperIdentityDbContext superCognitoDbContext,
             ILogger<PermissionService> logger)
         {
             _superCognitoDbContext = superCognitoDbContext;

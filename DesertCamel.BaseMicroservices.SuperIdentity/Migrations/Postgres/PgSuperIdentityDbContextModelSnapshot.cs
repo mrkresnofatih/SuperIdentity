@@ -3,7 +3,6 @@ using System;
 using DesertCamel.BaseMicroservices.SuperIdentity.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,11 +10,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace DesertCamel.BaseMicroservices.SuperIdentity.Migrations.Postgres
 {
-    [DbContext(typeof(PgSuperCognitoDbContext))]
-    [Migration("20230323153457_init_db_supercognito")]
-    partial class init_db_supercognito
+    [DbContext(typeof(PgSuperIdentityDbContext))]
+    partial class PgSuperIdentityDbContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

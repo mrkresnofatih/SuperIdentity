@@ -9,11 +9,11 @@ namespace DesertCamel.BaseMicroservices.SuperIdentity.Services.UserPoolService
 {
     public class UserPoolService : IUserPoolService
     {
-        private readonly SuperCognitoDbContext _superCognitoDbContext;
+        private readonly SuperIdentityDbContext _superCognitoDbContext;
         private readonly ILogger<UserPoolService> _logger;
 
         public UserPoolService(
-            SuperCognitoDbContext superCognitoDbContext,
+            SuperIdentityDbContext superCognitoDbContext,
             ILogger<UserPoolService> logger)
         {
             this._superCognitoDbContext = superCognitoDbContext;

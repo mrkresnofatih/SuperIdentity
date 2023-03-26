@@ -6,14 +6,14 @@ namespace DesertCamel.BaseMicroservices.SuperIdentity.Extensions
 {
     public static class DatabaseStartupExtension
     {
-        public static void AddSuperCognitoDbContext(this IServiceCollection services, IConfiguration configuration)
+        public static void AddSuperIdentityDbContext(this IServiceCollection services, IConfiguration configuration)
         {
             var selectedDatabase = configuration.GetSection(AppConstants.ConfigKeys.SELECTED_DATABASE).Value;
             switch (selectedDatabase)
             {
                 case AppConstants.DatabaseTypes.POSTGRES:
                     var pgConnectionString = configuration.GetSection(AppConstants.ConfigKeys.POSTGRES_DB_CONN_STRING).Value;
-                    services.AddDbContext<SuperCognitoDbContext, PgSuperCognitoDbContext>(options =>
+                    services.AddDbContext<SuperIdentityDbContext, PgSuperIdentityDbContext>(options =>
                     {
                         options.UseNpgsql(pgConnectionString);
                     });
@@ -23,7 +23,7 @@ namespace DesertCamel.BaseMicroservices.SuperIdentity.Extensions
             }
         }
 
-        public static void RunSuperCognitoDbMigration(this IApplicationBuilder app, IConfiguration configuration)
+        public static void RunSuperIdentityDbMigration(this IApplicationBuilder app, IConfiguration configuration)
         {
             using (var scope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
             {
@@ -31,7 +31,7 @@ namespace DesertCamel.BaseMicroservices.SuperIdentity.Extensions
                 switch (selectedDatabase)
                 {
                     case AppConstants.DatabaseTypes.POSTGRES:
-                        var pgDb = scope.ServiceProvider.GetRequiredService<PgSuperCognitoDbContext>().Database;
+                        var pgDb = scope.ServiceProvider.GetRequiredService<PgSuperIdentityDbContext>().Database;
                         if (pgDb.GetPendingMigrations().Any())
                         {
                             pgDb.Migrate();

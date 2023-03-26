@@ -9,11 +9,11 @@ namespace DesertCamel.BaseMicroservices.SuperIdentity.Services.UserService
 {
     public class UserService : IUserService
     {
-        private readonly SuperCognitoDbContext _superCognitoDbContext;
+        private readonly SuperIdentityDbContext _superCognitoDbContext;
         private readonly ILogger<UserService> _logger;
 
         public UserService(
-            SuperCognitoDbContext superCognitoDbContext,
+            SuperIdentityDbContext superCognitoDbContext,
             ILogger<UserService> logger)
         {
             _superCognitoDbContext = superCognitoDbContext;

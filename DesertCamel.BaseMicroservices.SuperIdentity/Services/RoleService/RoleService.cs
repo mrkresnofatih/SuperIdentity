@@ -9,11 +9,11 @@ namespace DesertCamel.BaseMicroservices.SuperIdentity.Services.RoleService
 {
     public class RoleService : IRoleService
     {
-        private readonly SuperCognitoDbContext _superCognitoDbContext;
+        private readonly SuperIdentityDbContext _superCognitoDbContext;
         private readonly ILogger<RoleService> _logger;
 
         public RoleService(
-            SuperCognitoDbContext superCognitoDbContext,
+            SuperIdentityDbContext superCognitoDbContext,
             ILogger<RoleService> logger)
         {
             this._superCognitoDbContext = superCognitoDbContext;
