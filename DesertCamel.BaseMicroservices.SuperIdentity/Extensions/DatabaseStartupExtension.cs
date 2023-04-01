@@ -1,4 +1,5 @@
-﻿using DesertCamel.BaseMicroservices.SuperIdentity.EntityFramework;
+﻿using DesertCamel.BaseMicroservices.SuperIdentity.Entity;
+using DesertCamel.BaseMicroservices.SuperIdentity.EntityFramework;
 using DesertCamel.BaseMicroservices.SuperIdentity.Utilities;
 using Microsoft.EntityFrameworkCore;
 
@@ -39,6 +40,18 @@ namespace DesertCamel.BaseMicroservices.SuperIdentity.Extensions
                         break;
                     default:
                         throw new Exception("Unknown Selected Database");
+                }
+
+                var databaseContext = scope.ServiceProvider.GetRequiredService<SuperIdentityDbContext>();
+                if (!databaseContext.Clients.Any())
+                {
+                    databaseContext.Clients.Add(new ClientEntity
+                    {
+                        Id = Guid.NewGuid(),
+                        ClientName = "admin@superIdentity",
+                        ClientSecret = "Admin123#"
+                    });
+                    databaseContext.SaveChanges();
                 }
             }
         }
