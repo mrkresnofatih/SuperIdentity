@@ -18,6 +18,8 @@ namespace DesertCamel.BaseMicroservices.SuperIdentity.EntityFramework
         public DbSet<UserEntity> Users { get; set; }
         public DbSet<UserAttributeEntity> UserAttributes { get; set; }
 
+        public DbSet<ClientEntity> Clients { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<RoleEntity>()
@@ -86,6 +88,10 @@ namespace DesertCamel.BaseMicroservices.SuperIdentity.EntityFramework
                 .HasOne(userAttribute => userAttribute.User)
                 .WithMany(user => user.UserAttributes)
                 .HasForeignKey(userAttribute => userAttribute.UserId);
+
+            modelBuilder.Entity<ClientEntity>()
+                .HasIndex(client => client.ClientName)
+                .IsUnique();
         }
     }
 }
