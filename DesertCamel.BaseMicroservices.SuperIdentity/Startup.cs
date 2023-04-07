@@ -1,5 +1,6 @@
 ﻿using DesertCamel.BaseMicroservices.SuperIdentity.Extensions;
 using DesertCamel.BaseMicroservices.SuperIdentity.Models;
+using DesertCamel.BaseMicroservices.SuperIdentity.Models.ClientService;
 using DesertCamel.BaseMicroservices.SuperIdentity.Services.ClientService;
 using DesertCamel.BaseMicroservices.SuperIdentity.Services.PermissionService;
 using DesertCamel.BaseMicroservices.SuperIdentity.Services.ResourceService;
@@ -21,6 +22,7 @@ namespace DesertCamel.BaseMicroservices.SuperIdentity
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddOptions();
             services.AddSuperIdentityDbContext(Configuration);
             services.AddControllers();
             services.AddEndpointsApiExplorer();
@@ -33,6 +35,8 @@ namespace DesertCamel.BaseMicroservices.SuperIdentity
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IClientService, ClientService>();
             services.AddScoped<IRolePermissionService, RolePermissionService>();
+
+            services.Configure<ClientConfig>(Configuration.GetSection(ClientConfig.ClientConfigSection));
             
             services.AddOptions();
         }

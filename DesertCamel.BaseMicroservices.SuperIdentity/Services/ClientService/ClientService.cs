@@ -3,19 +3,25 @@ using DesertCamel.BaseMicroservices.SuperIdentity.EntityFramework;
 using DesertCamel.BaseMicroservices.SuperIdentity.Models;
 using DesertCamel.BaseMicroservices.SuperIdentity.Models.ClientService;
 using DesertCamel.BaseMicroservices.SuperIdentity.Utilities;
+using Jose;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using System.Text;
 
 namespace DesertCamel.BaseMicroservices.SuperIdentity.Services.ClientService
 {
     public class ClientService : IClientService
     {
+        private readonly ClientConfig _clientConfig;
         private readonly SuperIdentityDbContext _superIdentityDbContext;
         private readonly ILogger<ClientService> _logger;
 
         public ClientService(
+            IOptions<ClientConfig> clientConfig,
             SuperIdentityDbContext superIdentityDbContext,
             ILogger<ClientService> logger)
         {
+            _clientConfig = clientConfig.Value;
             _superIdentityDbContext = superIdentityDbContext;
             _logger = logger;
         }
@@ -224,12 +230,21 @@ namespace DesertCamel.BaseMicroservices.SuperIdentity.Services.ClientService
                 }
 
                 _logger.LogInformation("success validating credentials");
-                // dummy implementation
+                var generateTokenResult = _GenerateToken(new ClientGenerateTokenRequest
+                {
+                    ClientName = foundClient.ClientName,
+                });
+                if (generateTokenResult.IsError())
+                {
+                    throw new Exception("failed to generate client token");
+                }
+
+                _logger.LogInformation("success generate token");
                 return new FuncResponse<ClientTokenResponseModel>
                 {
                     Data = new ClientTokenResponseModel
                     {
-                        Token = System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(foundClient.ClientName))
+                        Token = generateTokenResult.Data
                     }
                 };
             }
@@ -241,6 +256,41 @@ namespace DesertCamel.BaseMicroservices.SuperIdentity.Services.ClientService
                     ErrorMessage = e.Message
                 };
             }
+        }
+
+        private FuncResponse<string> _GenerateToken(ClientGenerateTokenRequest generateTokenRequest)
+        {
+            try
+            {
+                _logger.LogInformation($"Start _GenerateToken w. data: {generateTokenRequest.ToJson()}");
+                var payload = new Dictionary<string, object>
+                {
+                    { "sub", generateTokenRequest.ClientName },
+                    { "exp", DateTimeOffset.UtcNow.AddMinutes(60).ToUnixTimeSeconds() },
+                    { "iss", _clientConfig.Issuer },
+                };
+                var byteSecret = Encoding.ASCII.GetBytes(_clientConfig.Secret);
+                var token = Jose.JWT.Encode(payload, byteSecret, JwsAlgorithm.HS256);
+
+                _logger.LogInformation("success generate token");
+                return new FuncResponse<string>
+                {
+                    Data = token
+                };
+            }
+            catch(Exception e)
+            {
+                _logger.LogError(e, "failed to generate token");
+                return new FuncResponse<string>
+                {
+                    ErrorMessage = "failed ot generate token"
+                };
+            }
+        }
+
+        class ClientGenerateTokenRequest
+        {
+            public string ClientName { get; set; }
         }
 
         private string _GenerateSecret()
