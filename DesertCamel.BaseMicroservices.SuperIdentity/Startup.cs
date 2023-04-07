@@ -1,4 +1,5 @@
-﻿using DesertCamel.BaseMicroservices.SuperIdentity.Extensions;
+﻿using DesertCamel.BaseMicroservices.SuperBootstrap.Base;
+using DesertCamel.BaseMicroservices.SuperIdentity.Extensions;
 using DesertCamel.BaseMicroservices.SuperIdentity.Middlewares;
 using DesertCamel.BaseMicroservices.SuperIdentity.Models;
 using DesertCamel.BaseMicroservices.SuperIdentity.Models.ClientService;
@@ -9,7 +10,6 @@ using DesertCamel.BaseMicroservices.SuperIdentity.Services.RolePermissionService
 using DesertCamel.BaseMicroservices.SuperIdentity.Services.RoleService;
 using DesertCamel.BaseMicroservices.SuperIdentity.Services.UserPoolService;
 using DesertCamel.BaseMicroservices.SuperIdentity.Services.UserService;
-using DesertCamel.BaseMicroservices.SuperIdentity.Utilities;
 using Serilog;
 
 namespace DesertCamel.BaseMicroservices.SuperIdentity
@@ -25,7 +25,6 @@ namespace DesertCamel.BaseMicroservices.SuperIdentity
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddOptions();
             services.AddSuperIdentityDbContext(Configuration);
             services.AddControllers();
             services.AddEndpointsApiExplorer();
@@ -38,17 +37,9 @@ namespace DesertCamel.BaseMicroservices.SuperIdentity
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IClientService, ClientService>();
             services.AddScoped<IRolePermissionService, RolePermissionService>();
-            services.AddScoped<ICorrelationIdUtility, CorrelationIdUtility>();
-            services.AddScoped<CorrelationIdMiddleware>();
-            services.AddScoped<CorrelationIdLogMiddleware>();
             services.Configure<ClientConfig>(Configuration.GetSection(ClientConfig.ClientConfigSection));
-            
-            services.AddLogging(loggingBuilder =>
-            {
-                loggingBuilder.AddSerilog(new LoggerConfiguration()
-                    .ReadFrom.Configuration(Configuration)
-                    .CreateLogger()); 
-            });
+
+            services.AddBootstrapBase(Configuration);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -62,11 +53,10 @@ namespace DesertCamel.BaseMicroservices.SuperIdentity
             app.RunSuperIdentityDbMigration(Configuration);
 
             app.UseRouting();
-            app.UseSuperIdentityCorsPolicy();
+            app.UseCors();
             app.UseAuthorization();
 
-            app.UseMiddleware<CorrelationIdMiddleware>();
-            app.UseMiddleware<CorrelationIdLogMiddleware>();
+            app.UseBootstrapBase();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
