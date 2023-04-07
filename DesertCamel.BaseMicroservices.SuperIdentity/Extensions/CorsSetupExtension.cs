@@ -2,7 +2,7 @@
 {
     public static class CorsSetupExtension
     {
-        public static void UseSuperCognitoCorsPolicy(this IApplicationBuilder app)
+        public static void UseSuperIdentityCorsPolicy(this IApplicationBuilder app)
         {
             app.UseCors(builder =>
             {

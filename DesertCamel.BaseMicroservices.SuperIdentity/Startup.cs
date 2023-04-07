@@ -43,7 +43,6 @@ namespace DesertCamel.BaseMicroservices.SuperIdentity
             services.AddScoped<CorrelationIdLogMiddleware>();
             services.Configure<ClientConfig>(Configuration.GetSection(ClientConfig.ClientConfigSection));
             
-            services.AddOptions();
             services.AddLogging(loggingBuilder =>
             {
                 loggingBuilder.AddSerilog(new LoggerConfiguration()
@@ -63,7 +62,7 @@ namespace DesertCamel.BaseMicroservices.SuperIdentity
             app.RunSuperIdentityDbMigration(Configuration);
 
             app.UseRouting();
-            app.UseSuperCognitoCorsPolicy();
+            app.UseSuperIdentityCorsPolicy();
             app.UseAuthorization();
 
             app.UseMiddleware<CorrelationIdMiddleware>();
