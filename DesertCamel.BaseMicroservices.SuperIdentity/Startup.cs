@@ -46,10 +46,6 @@ namespace DesertCamel.BaseMicroservices.SuperIdentity
             services.AddOptions();
             services.AddLogging(loggingBuilder =>
             {
-                //var cfg = new ConfigurationBuilder()
-                //    .SetBasePath(Directory.GetCurrentDirectory())
-                //    .AddJsonFile("appsettings.json")
-                //    .Build();
                 loggingBuilder.AddSerilog(new LoggerConfiguration()
                     .ReadFrom.Configuration(Configuration)
                     .CreateLogger()); 
