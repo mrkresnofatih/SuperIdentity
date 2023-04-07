@@ -1,6 +1,5 @@
 ﻿using DesertCamel.BaseMicroservices.SuperBootstrap.Base;
 using DesertCamel.BaseMicroservices.SuperIdentity.Extensions;
-using DesertCamel.BaseMicroservices.SuperIdentity.Middlewares;
 using DesertCamel.BaseMicroservices.SuperIdentity.Models;
 using DesertCamel.BaseMicroservices.SuperIdentity.Models.ClientService;
 using DesertCamel.BaseMicroservices.SuperIdentity.Services.ClientService;
