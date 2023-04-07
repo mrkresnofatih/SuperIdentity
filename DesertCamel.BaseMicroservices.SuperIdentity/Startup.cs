@@ -1,4 +1,5 @@
 ﻿using DesertCamel.BaseMicroservices.SuperIdentity.Extensions;
+using DesertCamel.BaseMicroservices.SuperIdentity.Middlewares;
 using DesertCamel.BaseMicroservices.SuperIdentity.Models;
 using DesertCamel.BaseMicroservices.SuperIdentity.Models.ClientService;
 using DesertCamel.BaseMicroservices.SuperIdentity.Services.ClientService;
@@ -8,6 +9,8 @@ using DesertCamel.BaseMicroservices.SuperIdentity.Services.RolePermissionService
 using DesertCamel.BaseMicroservices.SuperIdentity.Services.RoleService;
 using DesertCamel.BaseMicroservices.SuperIdentity.Services.UserPoolService;
 using DesertCamel.BaseMicroservices.SuperIdentity.Services.UserService;
+using DesertCamel.BaseMicroservices.SuperIdentity.Utilities;
+using Serilog;
 
 namespace DesertCamel.BaseMicroservices.SuperIdentity
 {
@@ -35,10 +38,22 @@ namespace DesertCamel.BaseMicroservices.SuperIdentity
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IClientService, ClientService>();
             services.AddScoped<IRolePermissionService, RolePermissionService>();
-
+            services.AddScoped<ICorrelationIdUtility, CorrelationIdUtility>();
+            services.AddScoped<CorrelationIdMiddleware>();
+            services.AddScoped<CorrelationIdLogMiddleware>();
             services.Configure<ClientConfig>(Configuration.GetSection(ClientConfig.ClientConfigSection));
             
             services.AddOptions();
+            services.AddLogging(loggingBuilder =>
+            {
+                //var cfg = new ConfigurationBuilder()
+                //    .SetBasePath(Directory.GetCurrentDirectory())
+                //    .AddJsonFile("appsettings.json")
+                //    .Build();
+                loggingBuilder.AddSerilog(new LoggerConfiguration()
+                    .ReadFrom.Configuration(Configuration)
+                    .CreateLogger()); 
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -54,6 +69,9 @@ namespace DesertCamel.BaseMicroservices.SuperIdentity
             app.UseRouting();
             app.UseSuperCognitoCorsPolicy();
             app.UseAuthorization();
+
+            app.UseMiddleware<CorrelationIdMiddleware>();
+            app.UseMiddleware<CorrelationIdLogMiddleware>();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
