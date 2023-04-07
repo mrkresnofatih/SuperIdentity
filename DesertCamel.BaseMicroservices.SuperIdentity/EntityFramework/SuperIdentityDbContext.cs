@@ -55,7 +55,7 @@ namespace DesertCamel.BaseMicroservices.SuperIdentity.EntityFramework
             modelBuilder.Entity<RolePermissionEntity>()
                 .HasOne(rolePermission => rolePermission.Permission)
                 .WithMany(permission => permission.PermissionRoles)
-                .HasForeignKey(rolePermission => rolePermission.RoleName)
+                .HasForeignKey(rolePermission => rolePermission.PermissionName)
                 .HasPrincipalKey(permission => permission.Name);
 
             modelBuilder.Entity<UserPoolVectorEntity>()

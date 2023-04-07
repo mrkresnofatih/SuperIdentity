@@ -205,6 +205,44 @@ namespace DesertCamel.BaseMicroservices.SuperIdentity.Services.ClientService
             }
         }
 
+        public async Task<FuncResponse<ClientTokenResponseModel>> Token(ClientTokenRequestModel tokenRequest)
+        {
+            try
+            {
+                _logger.LogInformation($"Start Token w. data: {tokenRequest.ToJson()}");
+                var foundClient = await _superIdentityDbContext
+                    .Clients
+                    .Where(x => x.ClientName.Equals(tokenRequest.ClientName))
+                    .FirstOrDefaultAsync();
+                if (foundClient == null)
+                {
+                    throw new Exception("Unknown credentials");
+                }
+                if (!foundClient.ClientSecret.Equals(tokenRequest.ClientSecret))
+                {
+                    throw new Exception("Invalid credentials");
+                }
+
+                _logger.LogInformation("success validating credentials");
+                // dummy implementation
+                return new FuncResponse<ClientTokenResponseModel>
+                {
+                    Data = new ClientTokenResponseModel
+                    {
+                        Token = System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(foundClient.ClientName))
+                    }
+                };
+            }
+            catch(Exception e)
+            {
+                _logger.LogError(e, "failed to get token");
+                return new FuncResponse<ClientTokenResponseModel>
+                {
+                    ErrorMessage = e.Message
+                };
+            }
+        }
+
         private string _GenerateSecret()
         {
             Random res = new Random();

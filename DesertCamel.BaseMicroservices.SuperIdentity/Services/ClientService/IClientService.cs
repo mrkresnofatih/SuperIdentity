@@ -10,5 +10,6 @@ namespace DesertCamel.BaseMicroservices.SuperIdentity.Services.ClientService
         Task<FuncResponse<ClientDeleteResponseModel>> Delete(ClientDeleteRequestModel deleteRequest);
         Task<FuncListResponse<ClientGetResponseModel>> List(ClientListRequestModel listRequest);
         Task<FuncResponse<ClientRotateResponseModel>> Rotate(ClientRotateRequestModel rotateRequest);
+        Task<FuncResponse<ClientTokenResponseModel>> Token(ClientTokenRequestModel tokenRequest);
     }
 }
