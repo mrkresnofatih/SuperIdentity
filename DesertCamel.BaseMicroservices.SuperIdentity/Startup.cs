@@ -6,6 +6,7 @@ using DesertCamel.BaseMicroservices.SuperIdentity.Services.ClientService;
 using DesertCamel.BaseMicroservices.SuperIdentity.Services.PermissionService;
 using DesertCamel.BaseMicroservices.SuperIdentity.Services.ResourceService;
 using DesertCamel.BaseMicroservices.SuperIdentity.Services.RolePermissionService;
+using DesertCamel.BaseMicroservices.SuperIdentity.Services.RoleResourceService;
 using DesertCamel.BaseMicroservices.SuperIdentity.Services.RoleService;
 using DesertCamel.BaseMicroservices.SuperIdentity.Services.UserPoolService;
 using DesertCamel.BaseMicroservices.SuperIdentity.Services.UserService;
@@ -36,6 +37,7 @@ namespace DesertCamel.BaseMicroservices.SuperIdentity
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IClientService, ClientService>();
             services.AddScoped<IRolePermissionService, RolePermissionService>();
+            services.AddScoped<IRoleResourceService, RoleResourceService>();
             services.Configure<ClientConfig>(Configuration.GetSection(ClientConfig.ClientConfigSection));
 
             services.AddBootstrapBase(Configuration);
