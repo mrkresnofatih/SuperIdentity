@@ -7,9 +7,5 @@ namespace DesertCamel.BaseMicroservices.SuperIdentity.Models.ClientService
         [Required]
         [MaxLength(100)]
         public string ClientName { get; set; }
-
-        [Required]
-        [MaxLength(100)]
-        public string ClientSecret { get; set; }
     }
 }
