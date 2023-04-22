@@ -2,23 +2,19 @@
 
 namespace DesertCamel.BaseMicroservices.SuperIdentity.Entity
 {
-    public class ClientRoleEntity
+    public class ClientAuthorityEntity
     {
         [Key]
         public Guid Id { get; set; }
 
         [Required]
-        public string RoleName { get; set; }
+        public string ClientName {get;set;}
 
         [Required]
-        [MaxLength(50)]
-        public string ClientName { get; set; }
-
-        [Required]
-        public string ResourceName { get; set; }
+        public string RoleResourceId { get; set; }
 
         public ClientEntity Client { get; set; }
 
-        public RoleEntity Role { get; set; }
+        public RoleResourceEntity RoleResource { get; set; }
     }
 }

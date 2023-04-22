@@ -17,7 +17,5 @@ namespace DesertCamel.BaseMicroservices.SuperIdentity.Entity
         public UserPoolEntity UserPool { get; set; }
 
         public List<UserAttributeEntity> UserAttributes { get; set; }
-
-        public List<UserRoleEntity> UserRoles { get; set; }
     }
 }

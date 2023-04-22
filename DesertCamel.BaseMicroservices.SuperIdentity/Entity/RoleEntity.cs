@@ -17,7 +17,5 @@ namespace DesertCamel.BaseMicroservices.SuperIdentity.Entity
 
         public List<RoleResourceEntity> RoleResources { get; set; }
         public List<RolePermissionEntity> RolePermissions { get; set; }
-        public List<UserRoleEntity> RoleUsers { get; set; }
-        public List<ClientRoleEntity> RoleClients { get; set; }
     }
 }

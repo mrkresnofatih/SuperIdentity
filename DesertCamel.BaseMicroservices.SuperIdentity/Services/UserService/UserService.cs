@@ -131,7 +131,7 @@ namespace DesertCamel.BaseMicroservices.SuperIdentity.Services.UserService
         {
             try
             {
-                _logger.LogInformation($"Start Create Attribute w. data: {createRequest.ToJson()}");
+                _logger.LogInformation($"Start Add Attribute w. data: {createRequest.ToJson()}");
                 var id = Guid.NewGuid();
                 _superCognitoDbContext.UserAttributes.Add(new UserAttributeEntity
                 {

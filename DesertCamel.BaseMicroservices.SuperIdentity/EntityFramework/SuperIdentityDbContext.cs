@@ -17,9 +17,8 @@ namespace DesertCamel.BaseMicroservices.SuperIdentity.EntityFramework
         public DbSet<RoleResourceEntity> RoleResources { get; set; }
         public DbSet<UserEntity> Users { get; set; }
         public DbSet<UserAttributeEntity> UserAttributes { get; set; }
-
         public DbSet<ClientEntity> Clients { get; set; }
-        public DbSet<ClientRoleEntity> ClientRoles { get; set; }
+        public DbSet<ClientAuthorityEntity> ClientAuthorities { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -73,18 +72,6 @@ namespace DesertCamel.BaseMicroservices.SuperIdentity.EntityFramework
                 .HasIndex(user => user.PrincipalName)
                 .IsUnique();
 
-            modelBuilder.Entity<UserRoleEntity>()
-                .HasOne(userRole => userRole.User)
-                .WithMany(user => user.UserRoles)
-                .HasForeignKey(userRole => userRole.UserPrincipalName)
-                .HasPrincipalKey(user => user.PrincipalName);
-
-            modelBuilder.Entity<UserRoleEntity>()
-                .HasOne(userRole => userRole.Role)
-                .WithMany(role => role.RoleUsers)
-                .HasForeignKey(userRole => userRole.RoleName)
-                .HasPrincipalKey(role => role.Name);
-
             modelBuilder.Entity<UserAttributeEntity>()
                 .HasOne(userAttribute => userAttribute.User)
                 .WithMany(user => user.UserAttributes)
@@ -94,17 +81,16 @@ namespace DesertCamel.BaseMicroservices.SuperIdentity.EntityFramework
                 .HasIndex(client => client.ClientName)
                 .IsUnique();
 
-            modelBuilder.Entity<ClientRoleEntity>()
-                .HasOne(clientRole => clientRole.Client)
-                .WithMany(client => client.ClientRoles)
-                .HasForeignKey(clientRole => clientRole.ClientName)
+            modelBuilder.Entity<ClientAuthorityEntity>()
+                .HasOne(clientAuthority => clientAuthority.Client)
+                .WithMany(client => client.ClientAuthorities)
+                .HasForeignKey(clientAuthority => clientAuthority.ClientName)
                 .HasPrincipalKey(client => client.ClientName);
 
-            modelBuilder.Entity<ClientRoleEntity>()
-                .HasOne(clientRole => clientRole.Role)
-                .WithMany(role => role.RoleClients)
-                .HasForeignKey(clientRole => clientRole.RoleName)
-                .HasPrincipalKey(role => role.Name);
+            modelBuilder.Entity<ClientAuthorityEntity>()
+                .HasOne(clientAuthority => clientAuthority.RoleResource)
+                .WithMany(roleResource => roleResource.ClientAuthorities)
+                .HasForeignKey(clientAuthority => clientAuthority.RoleResourceId);
         }
     }
 }

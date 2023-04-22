@@ -3,6 +3,7 @@ using System;
 using DesertCamel.BaseMicroservices.SuperIdentity.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DesertCamel.BaseMicroservices.SuperIdentity.Migrations.Postgres
 {
     [DbContext(typeof(PgSuperIdentityDbContext))]
-    partial class PgSuperIdentityDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230420154546_drop_userrole_clientrole")]
+    partial class drop_userrole_clientrole
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,29 +23,6 @@ namespace DesertCamel.BaseMicroservices.SuperIdentity.Migrations.Postgres
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("DesertCamel.BaseMicroservices.SuperIdentity.Entity.ClientAuthorityEntity", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("ClientName")
-                        .IsRequired()
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<string>("RoleResourceId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ClientName");
-
-                    b.HasIndex("RoleResourceId");
-
-                    b.ToTable("ClientAuthorities");
-                });
 
             modelBuilder.Entity("DesertCamel.BaseMicroservices.SuperIdentity.Entity.ClientEntity", b =>
                 {
@@ -325,26 +304,6 @@ namespace DesertCamel.BaseMicroservices.SuperIdentity.Migrations.Postgres
                     b.ToTable("UserPoolVectorEntity");
                 });
 
-            modelBuilder.Entity("DesertCamel.BaseMicroservices.SuperIdentity.Entity.ClientAuthorityEntity", b =>
-                {
-                    b.HasOne("DesertCamel.BaseMicroservices.SuperIdentity.Entity.ClientEntity", "Client")
-                        .WithMany("ClientAuthorities")
-                        .HasForeignKey("ClientName")
-                        .HasPrincipalKey("ClientName")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DesertCamel.BaseMicroservices.SuperIdentity.Entity.RoleResourceEntity", "RoleResource")
-                        .WithMany("ClientAuthorities")
-                        .HasForeignKey("RoleResourceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Client");
-
-                    b.Navigation("RoleResource");
-                });
-
             modelBuilder.Entity("DesertCamel.BaseMicroservices.SuperIdentity.Entity.RolePermissionEntity", b =>
                 {
                     b.HasOne("DesertCamel.BaseMicroservices.SuperIdentity.Entity.PermissionEntity", "Permission")
@@ -420,11 +379,6 @@ namespace DesertCamel.BaseMicroservices.SuperIdentity.Migrations.Postgres
                     b.Navigation("UserPool");
                 });
 
-            modelBuilder.Entity("DesertCamel.BaseMicroservices.SuperIdentity.Entity.ClientEntity", b =>
-                {
-                    b.Navigation("ClientAuthorities");
-                });
-
             modelBuilder.Entity("DesertCamel.BaseMicroservices.SuperIdentity.Entity.PermissionEntity", b =>
                 {
                     b.Navigation("PermissionRoles");
@@ -440,11 +394,6 @@ namespace DesertCamel.BaseMicroservices.SuperIdentity.Migrations.Postgres
                     b.Navigation("RolePermissions");
 
                     b.Navigation("RoleResources");
-                });
-
-            modelBuilder.Entity("DesertCamel.BaseMicroservices.SuperIdentity.Entity.RoleResourceEntity", b =>
-                {
-                    b.Navigation("ClientAuthorities");
                 });
 
             modelBuilder.Entity("DesertCamel.BaseMicroservices.SuperIdentity.Entity.UserEntity", b =>
