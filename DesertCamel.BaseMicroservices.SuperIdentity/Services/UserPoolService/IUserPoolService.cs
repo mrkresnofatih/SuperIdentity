@@ -12,6 +12,7 @@ namespace DesertCamel.BaseMicroservices.SuperIdentity.Services.UserPoolService
         Task<FuncListResponse<UserPoolGetResponseModel>> ListUserPools(UserPoolListRequestModel listRequest);
 
         Task<FuncListResponse<UserPoolListActiveItemResponseModel>> ListActiveUserPools(UserPoolListActiveRequestModel listActiveRequest);
+
         Task<FuncResponse<UserPoolDeleteResponseModel>> DeleteUserPool(UserPoolDeleteRequestModel deleteRequest);
 
         Task<FuncResponse<UserPoolUpdateResponseModel>> UpdateUserPool(UserPoolUpdateRequestModel updateRequest);

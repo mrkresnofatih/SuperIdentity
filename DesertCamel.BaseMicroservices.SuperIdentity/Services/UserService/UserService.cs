@@ -9,154 +9,82 @@ namespace DesertCamel.BaseMicroservices.SuperIdentity.Services.UserService
 {
     public class UserService : IUserService
     {
-        private readonly SuperIdentityDbContext _superCognitoDbContext;
+        private readonly SuperIdentityDbContext _superIdentityDbContext;
         private readonly ILogger<UserService> _logger;
 
         public UserService(
-            SuperIdentityDbContext superCognitoDbContext,
+            SuperIdentityDbContext superIdentityDbContext,
             ILogger<UserService> logger)
         {
-            _superCognitoDbContext = superCognitoDbContext;
+            _superIdentityDbContext = superIdentityDbContext;
             _logger = logger;
         }
 
-        public FuncResponse<UserCreateResponseModel> Create(UserCreateRequestModel createRequest)
+        public async Task<FuncResponse<UserCreateResponseModel>> Create(UserCreateRequestModel createRequest)
         {
+            _logger.LogInformation($"Start CreateUser w. data: {createRequest.ToJson()}");
             try
             {
-                _logger.LogInformation($"Start CreateUser w. data: {createRequest.ToJson()}");
-                var id = Guid.NewGuid();
-                _superCognitoDbContext.Users.Add(new UserEntity
+                var newUser = new UserEntity
                 {
-                    Id = id,
-                    PrincipalName = createRequest.PrincipalName,
+                    Id = Guid.NewGuid(),
                     UserPoolId = createRequest.UserPoolId,
-                });
-                _superCognitoDbContext.SaveChanges();
-
-                _logger.LogInformation("creating user attributes");
-                foreach (var attribute in createRequest.UserAttributes)
-                {
-                    if (attribute.Value == null)
-                    {
-                        continue;
-                    }
-                    var createUserAttributeResult = CreateAttribute(new UserAttributeCreateRequestModel
-                    {
-                        Key = attribute.Key,
-                        UserId = id,
-                        Value = attribute.Value,
-                    });
-                    if (createUserAttributeResult.IsError())
-                    {
-                        _logger.LogError($"failed to save attribute w. data: {attribute.ToJson()}");
-                        continue;
-                    }
-                    _logger.LogInformation("success save attribute");
-                }
-
-                var getUserResult = Get(new UserGetRequestModel
-                {
                     PrincipalName = createRequest.PrincipalName
-                });
-                if (getUserResult.IsError())
-                {
-                    throw new Exception("create user not saved successfully");
-                }
+                };
+                _superIdentityDbContext.Users.Add(newUser);
+                await _superIdentityDbContext.SaveChangesAsync();
 
-                var createdUser = getUserResult.Data;
-
-                _logger.LogInformation("create user success");
+                _logger.LogInformation("success: createUser");
                 return new FuncResponse<UserCreateResponseModel>
                 {
                     Data = new UserCreateResponseModel
                     {
-                        Id = createdUser.Id,
-                        UserPoolId = createdUser.UserPoolId,
-                        PrincipalName= createRequest.PrincipalName,
-                        UserAttributes = createdUser.UserAttributes
+                        Id = newUser.Id,
+                        PrincipalName = newUser.PrincipalName,
+                        UserPoolId = newUser.UserPoolId
                     }
                 };
             }
             catch(Exception e)
             {
-                _logger.LogError(e, "create user failed");
+                _logger.LogError(e, "failed to create user");
                 return new FuncResponse<UserCreateResponseModel>
                 {
-                    ErrorMessage = "create user"
+                    ErrorMessage = "failed to create user"
                 };
             }
         }
 
-        public FuncResponse<UserAttributeUpdateResponseModel> UpdateAttribute(UserAttributeUpdateRequestModel updateRequest)
+        public async Task<FuncResponse<UserAttributeCreateResponseModel>> CreateAttribute(UserAttributeCreateRequestModel createRequest)
         {
+            _logger.LogInformation($"Start CreateAttribute w. data: {createRequest.ToJson()}");
             try
             {
-                _logger.LogInformation($"Start UpdateAttribute w. data: {updateRequest.ToJson()}");
-                var attribute = _superCognitoDbContext.UserAttributes
-                    .Where(x => x.UserId.Equals(updateRequest.UserId) && x.Key.Equals(updateRequest.Key))
-                    .FirstOrDefault();
-                if (attribute == null)
+                var newAttribute = new UserAttributeEntity
                 {
-                    throw new Exception("attribute for update doesn't exist");
-                }
-
-                attribute.Value = updateRequest.Value;
-                _superCognitoDbContext.UserAttributes.Update(attribute);
-                _superCognitoDbContext.SaveChanges();
-
-                _logger.LogInformation("success update attribute");
-                return new FuncResponse<UserAttributeUpdateResponseModel>
-                {
-                    Data = new UserAttributeUpdateResponseModel
-                    {
-                        Id = attribute.Id,
-                        UserId = updateRequest.UserId,
-                        Key = updateRequest.Key,
-                        Value = updateRequest.Value,
-                    }
-                };
-            }
-            catch(Exception e)
-            {
-                _logger.LogError(e, "failed to update attribute");
-                return new FuncResponse<UserAttributeUpdateResponseModel>
-                {
-                    ErrorMessage = "failed to update attribute"
-                };
-            }
-        }
-
-        public FuncResponse<UserAttributeCreateResponseModel> CreateAttribute(UserAttributeCreateRequestModel createRequest)
-        {
-            try
-            {
-                _logger.LogInformation($"Start Add Attribute w. data: {createRequest.ToJson()}");
-                var id = Guid.NewGuid();
-                _superCognitoDbContext.UserAttributes.Add(new UserAttributeEntity
-                {
-                    Id = id,
-                    Key = createRequest.Key,
+                    Id = Guid.NewGuid(),
                     UserId = createRequest.UserId,
-                    Value = createRequest.Value
-                });
-                _superCognitoDbContext.SaveChanges();
+                    Key = createRequest.Key,
+                    Value = createRequest.Value,
+                };
+                _superIdentityDbContext.UserAttributes.Add(newAttribute);
+                await _superIdentityDbContext.SaveChangesAsync();
 
-                _logger.LogInformation("create user attribute success");
+                _logger.LogInformation("success: createAttribute");
                 return new FuncResponse<UserAttributeCreateResponseModel>
                 {
                     Data = new UserAttributeCreateResponseModel
                     {
-                        Id = id,
-                        Key = createRequest.Key,
-                        Value = createRequest.Value,
-                        UserId = createRequest.UserId
+                        Id = newAttribute.Id,
+                        Key = newAttribute.Key,
+                        Value = newAttribute.Value,
+                        UserId = newAttribute.UserId
                     }
                 };
             }
             catch(Exception e)
             {
-                _logger.LogError(e, "failed to create new user attribute");
+                _logger.LogError(e, "failed to create user attribute");
                 return new FuncResponse<UserAttributeCreateResponseModel>
                 {
                     ErrorMessage = "failed to create user attribute"
@@ -164,88 +92,127 @@ namespace DesertCamel.BaseMicroservices.SuperIdentity.Services.UserService
             }
         }
 
-        public FuncResponse<UserGetResponseModel> Get(UserGetRequestModel getRequest)
+        public async Task<FuncResponse<UserDeleteResponseModel>> Delete(UserDeleteRequestModel deleteRequest)
         {
+            _logger.LogInformation($"start delete user w. data: {deleteRequest.ToJson()}");
             try
             {
-                _logger.LogInformation($"Start GetUser w. data: {getRequest.ToJson()}");
-                var user = _superCognitoDbContext.Users
-                    .Include(x => x.UserAttributes)
-                    .Where(x => x.PrincipalName.Equals(getRequest.PrincipalName))
-                    .FirstOrDefault();
-                if (user == null)
+                var foundUser = await _superIdentityDbContext.Users
+                    .Where(x => x.PrincipalName.Equals(deleteRequest.PrincipalName))
+                    .FirstOrDefaultAsync();
+                if (foundUser == null)
                 {
-                    throw new Exception("get user not found");
+                    throw new Exception("user for delete op not found");
                 }
 
-                _logger.LogInformation("get user success");
-                return new FuncResponse<UserGetResponseModel>
+                _superIdentityDbContext.Users.Remove(foundUser);
+                await _superIdentityDbContext.SaveChangesAsync();
+
+                _logger.LogInformation("success delete user");
+                return new FuncResponse<UserDeleteResponseModel>
                 {
-                    Data = new UserGetResponseModel
+                    Data = new UserDeleteResponseModel
                     {
-                        Id = user.Id,
-                        PrincipalName = user.PrincipalName,
-                        UserPoolId = user.UserPoolId,
-                        UserAttributes = user.UserAttributes.ToDictionary(x => x.Key, x => new UserAttributeGetResponseModel
-                        {
-                            Id = x.Id,
-                            Key = x.Key,
-                            UserId = x.UserId,
-                            Value = x.Value
-                        })
+                        PrincipalName = foundUser.PrincipalName,
                     }
                 };
             }
             catch(Exception e)
             {
-                _logger.LogError(e, "GetUser failed");
-                return new FuncResponse<UserGetResponseModel>
+                _logger.LogError(e, "failed to delete user");
+                return new FuncResponse<UserDeleteResponseModel>
                 {
-                    ErrorMessage = "get user failed"
+                    ErrorMessage = "failed to delete user"
                 };
             }
         }
 
-        public FuncListResponse<UserGetResponseModel> List(UserListRequestModel listRequest)
+        public async Task<FuncResponse<UserGetResponseModel>> Get(UserGetRequestModel deleteRequest)
         {
+            _logger.LogInformation($"start get user w. data: {deleteRequest.ToJson()}");
             try
             {
-                _logger.LogInformation($"Start ListUsers w. data: {listRequest.ToJson()}");
-                var userQuery = _superCognitoDbContext.Users
+                var foundUser = await _superIdentityDbContext.Users
                     .Include(x => x.UserAttributes)
-                    .AsQueryable();
-
-                if (!String.IsNullOrWhiteSpace(listRequest.QuickSearch))
-                {
-                    userQuery = userQuery
-                        .Where(x => x.PrincipalName.Contains(listRequest.QuickSearch))
-                        .Where(x => x.UserAttributes.Any(x => x.Value.Contains(listRequest.QuickSearch)));
-                }
-
-                var count = userQuery.Count();
-
-                var users = userQuery
-                    .OrderBy(x => x.PrincipalName)
-                    .Skip((int)(listRequest.PageSize * (listRequest.Page - 1)))
-                    .Take((int)(listRequest.PageSize))
-                    .ToList();
-
-                _logger.LogInformation("success list users");
-                return new FuncListResponse<UserGetResponseModel>
-                {
-                    Data = users.Select(x => new UserGetResponseModel
+                    .Where(x => x.PrincipalName.Equals(deleteRequest.PrincipalName))
+                    .Select(x => new UserGetResponseModel
                     {
                         Id = x.Id,
                         PrincipalName = x.PrincipalName,
-                        UserAttributes = x.UserAttributes.GroupBy(x => x.Key).Distinct().Select(x => x.First()).ToDictionary(x => x.Key, x => new UserAttributeGetResponseModel
-                        {
-                            Id = x.Id,
-                            UserId = x.UserId,
-                            Key = x.Key,
-                            Value = x.Value
-                        }),
-                        UserPoolId = x.UserPoolId
-                    }).ToList(),
+                        UserPoolId = x.UserPoolId,
+                        UserAttributes = x.UserAttributes
+                            .Select(x => new UserAttributeGetResponseModel
+                            {
+                                Id = x.Id,
+                                Key = x.Key,
+                                Value = x.Value,
+                                UserId = x.UserId
+                            })
+                            .ToList()
+                    })
+                    .FirstOrDefaultAsync();
+                if (foundUser == null)
+                {
+                    throw new Exception("user for get op not found");
+                }
+
+                _logger.LogInformation("success get user");
+                return new FuncResponse<UserGetResponseModel>
+                {
+                    Data = foundUser,                    
+                };
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "failed to get user");
+                return new FuncResponse<UserGetResponseModel>
+                {
+                    ErrorMessage = "failed to get user"
+                };
+            }
+        }
+
+        public async Task<FuncListResponse<UserGetResponseModel>> List(UserListRequestModel listRequest)
+        {
+            _logger.LogInformation($"Start List w. data: {listRequest.ToJson()}");
+            try
+            {
+                var query = _superIdentityDbContext
+                    .Users
+                    .Include(x => x.UserAttributes)
+                    .AsQueryable();
+                
+                if (!String.IsNullOrWhiteSpace(listRequest.PrincipalName))
+                {
+                    query = query.Where(x => x.PrincipalName.Contains(listRequest.PrincipalName));
+                }
+
+                query = query.OrderBy(x => x.PrincipalName);
+                var count = await query.CountAsync();
+                var users = await query
+                    .Skip((listRequest.Page - 1) * listRequest.PageSize)
+                    .Take(listRequest.PageSize)
+                    .Select(x => new UserGetResponseModel
+                    {
+                        Id = x.Id,
+                        PrincipalName = x.PrincipalName,
+                        UserPoolId = x.UserPoolId,
+                        UserAttributes = x.UserAttributes
+                            .Select(x => new UserAttributeGetResponseModel
+                            {
+                                Id = x.Id,
+                                Key = x.Key,
+                                Value = x.Value,
+                                UserId = x.UserId
+                            })
+                            .ToList()
+                    })
+                    .ToListAsync();
+
+                _logger.LogInformation("success: list users");
+                return new FuncListResponse<UserGetResponseModel>
+                {
+                    Data = users,
                     Total = count
                 };
             }
@@ -259,38 +226,40 @@ namespace DesertCamel.BaseMicroservices.SuperIdentity.Services.UserService
             }
         }
 
-        public FuncResponse<UserDeleteResponseModel> Delete(UserDeleteRequestModel deleteRequest)
+        public async Task<FuncResponse<UserAttributeUpdateResponseModel>> UpdateAttribute(UserAttributeUpdateRequestModel updateRequest)
         {
+            _logger.LogInformation($"Start UpdateAttribute w. data: {updateRequest.ToJson()}");
             try
             {
-                _logger.LogInformation($"Start DeleteUser w. data: {deleteRequest.ToJson()}");
-                var user = _superCognitoDbContext.Users
-                    .Where(x => x.PrincipalName.Equals(deleteRequest.PrincipalName))
-                    .FirstOrDefault();
-
-                if (user == null)
+                var foundAttribute = await _superIdentityDbContext.UserAttributes
+                    .Where(x => x.UserId.Equals(updateRequest.UserId) && x.Key.Equals(updateRequest.Key))
+                    .FirstOrDefaultAsync();
+                if (foundAttribute == null)
                 {
-                    throw new Exception("user for deletion not found");
+                    throw new Exception("user attribute for update op not found");
                 }
 
-                _superCognitoDbContext.Users.Remove(user);
-                _superCognitoDbContext.SaveChanges();
+                foundAttribute.Value = updateRequest.Value;
+                await _superIdentityDbContext.SaveChangesAsync();
 
-                _logger.LogInformation("delete success");
-                return new FuncResponse<UserDeleteResponseModel>
+                _logger.LogInformation("success: updateAttribute");
+                return new FuncResponse<UserAttributeUpdateResponseModel>
                 {
-                    Data = new UserDeleteResponseModel
+                    Data = new UserAttributeUpdateResponseModel
                     {
-                        PrincipalName = deleteRequest.PrincipalName
+                        Id = foundAttribute.Id,
+                        Key = foundAttribute.Key,
+                        Value = foundAttribute.Value,
+                        UserId = foundAttribute.UserId
                     }
                 };
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                _logger.LogError(e, "delete user failed");
-                return new FuncResponse<UserDeleteResponseModel>
+                _logger.LogError(e, "failed to update user attribute");
+                return new FuncResponse<UserAttributeUpdateResponseModel>
                 {
-                    ErrorMessage = "delete user failed"
+                    ErrorMessage = "failed to update user attribute"
                 };
             }
         }

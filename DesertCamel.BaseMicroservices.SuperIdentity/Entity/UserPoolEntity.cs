@@ -39,6 +39,12 @@ namespace DesertCamel.BaseMicroservices.SuperIdentity.Entity
         public string JwksUrl { get; set; }
 
         [Required]
+        public string RedirectUri { get; set; }
+
+        [Required]
+        public string ApplicationCallbackUrl { get; set; }
+
+        [Required]
         public bool Enabled { get; set; }
 
         [Required]

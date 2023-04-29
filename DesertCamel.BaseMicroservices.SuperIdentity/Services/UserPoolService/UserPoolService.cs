@@ -41,6 +41,8 @@ namespace DesertCamel.BaseMicroservices.SuperIdentity.Services.UserPoolService
                     UserInfoUrl = createRequest.UserInfoUrl,
                     PrincipalNameKey = createRequest.PrincipalNameKey,
                     TokenLifeTime = createRequest.TokenLifeTime,
+                    RedirectUri = createRequest.RedirectUri,
+                    ApplicationCallbackUrl = createRequest.ApplicationCallbackUrl
                 };
 
                 await _superCognitoDbContext.UserPools.AddAsync(newUserPool);
@@ -133,6 +135,8 @@ namespace DesertCamel.BaseMicroservices.SuperIdentity.Services.UserPoolService
                         PrincipalNameKey = userPool.PrincipalNameKey,
                         TokenLifeTime = userPool.TokenLifeTime,
                         UserInfoUrl = userPool.UserInfoUrl,
+                        ApplicationCallbackUrl = userPool.ApplicationCallbackUrl,
+                        RedirectUri = userPool.RedirectUri
                     },
                     ErrorMessage = null
                 };
@@ -215,6 +219,8 @@ namespace DesertCamel.BaseMicroservices.SuperIdentity.Services.UserPoolService
                         PrincipalNameKey = x.PrincipalNameKey,
                         TokenLifeTime = x.TokenLifeTime,
                         UserInfoUrl = x.UserInfoUrl,
+                        RedirectUri = x.RedirectUri,
+                        ApplicationCallbackUrl = x.ApplicationCallbackUrl
                     })
                     .ToListAsync();
 
@@ -263,6 +269,8 @@ namespace DesertCamel.BaseMicroservices.SuperIdentity.Services.UserPoolService
                 userPool.PrincipalNameKey = updateRequest.PrincipalNameKey;
                 userPool.TokenLifeTime = updateRequest.TokenLifeTime;
                 userPool.UserInfoUrl = updateRequest.UserInfoUrl;
+                userPool.ApplicationCallbackUrl = updateRequest.ApplicationCallbackUrl;
+                userPool.RedirectUri = updateRequest.RedirectUri;
 
                 _superCognitoDbContext.UserPools.Update(userPool);
                 await _superCognitoDbContext.SaveChangesAsync();

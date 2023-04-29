@@ -5,16 +5,16 @@ namespace DesertCamel.BaseMicroservices.SuperIdentity.Services.UserService
 {
     public interface IUserService
     {
-        FuncResponse<UserCreateResponseModel> Create(UserCreateRequestModel createRequest);
+        Task<FuncResponse<UserCreateResponseModel>> Create(UserCreateRequestModel createRequest);
 
-        FuncResponse<UserGetResponseModel> Get(UserGetRequestModel getRequest);
+        Task<FuncResponse<UserGetResponseModel>> Get(UserGetRequestModel getRequest);
 
-        FuncListResponse<UserGetResponseModel> List(UserListRequestModel listRequest);
+        Task<FuncListResponse<UserGetResponseModel>> List(UserListRequestModel listRequest);
 
-        FuncResponse<UserDeleteResponseModel> Delete(UserDeleteRequestModel deleteRequest);
+        Task<FuncResponse<UserDeleteResponseModel>> Delete(UserDeleteRequestModel deleteRequest);
 
-        FuncResponse<UserAttributeCreateResponseModel> CreateAttribute(UserAttributeCreateRequestModel createRequest);
+        Task<FuncResponse<UserAttributeCreateResponseModel>> CreateAttribute(UserAttributeCreateRequestModel createRequest);
 
-        FuncResponse<UserAttributeUpdateResponseModel> UpdateAttribute(UserAttributeUpdateRequestModel updateRequest);
+        Task<FuncResponse<UserAttributeUpdateResponseModel>> UpdateAttribute(UserAttributeUpdateRequestModel updateRequest);
     }
 }

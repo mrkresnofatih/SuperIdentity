@@ -44,6 +44,14 @@ namespace DesertCamel.BaseMicroservices.SuperIdentity.Models.UserPoolService
         public string JwksUrl { get; set; }
 
         [Required]
+        [MaxLength(300)]
+        public string RedirectUri { get; set; }
+
+        [Required]
+        [MaxLength(300)]
+        public string ApplicationCallbackUrl { get; set; }
+
+        [Required]
         public bool Enabled { get; set; }
 
         [Required]

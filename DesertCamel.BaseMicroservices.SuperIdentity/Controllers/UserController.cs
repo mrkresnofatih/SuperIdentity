@@ -20,49 +20,22 @@ namespace DesertCamel.BaseMicroservices.SuperIdentity.Controllers
             _logger = logger;
         }
 
-        [HttpPost("list")]
-        public async Task<FuncListResponse<UserGetResponseModel>> List([FromBody] UserListRequestModel listRequest)
+        [HttpPost("delete")]
+        public async Task<FuncResponse<UserDeleteResponseModel>> Delete(UserDeleteRequestModel deleteRequest)
         {
-            var listResult = _userService.List(listRequest);
-            if (listResult.IsError())
-            {
-                _logger.LogError(listResult.ErrorMessage);
-                return new FuncListResponse<UserGetResponseModel>
-                {
-                    ErrorMessage = "list users failed"
-                };
-            }
-            return listResult;
+            return await _userService.Delete(deleteRequest);
         }
 
         [HttpPost("get")]
-        public async Task<FuncResponse<UserGetResponseModel>> Get([FromBody] UserGetRequestModel getRequest)
+        public async Task<FuncResponse<UserGetResponseModel>> Get(UserGetRequestModel getRequest)
         {
-            var getResult = _userService.Get(getRequest);
-            if (getResult.IsError())
-            {
-                _logger.LogError(getResult.ErrorMessage);
-                return new FuncResponse<UserGetResponseModel>
-                {
-                    ErrorMessage = "get user failed"
-                };
-            }
-            return getResult;
+            return await _userService.Get(getRequest);
         }
 
-        [HttpPost("delete")]
-        public async Task<FuncResponse<UserDeleteResponseModel>> Delete([FromBody] UserDeleteRequestModel deleteRequest)
+        [HttpPost("list")]
+        public async Task<FuncListResponse<UserGetResponseModel>> List(UserListRequestModel listRequest)
         {
-            var deleteResult = _userService.Delete(deleteRequest);
-            if (deleteResult.IsError())
-            {
-                _logger.LogError(deleteResult.ErrorMessage);
-                return new FuncResponse<UserDeleteResponseModel>
-                {
-                    ErrorMessage = "delete user failed"
-                };
-            }
-            return deleteResult;
+            return await _userService.List(listRequest);
         }
     }
 }

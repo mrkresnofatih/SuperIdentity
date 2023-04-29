@@ -22,6 +22,10 @@
 
         public string JwksUrl { get; set; }
 
+        public string RedirectUri { get; set; }
+
+        public string ApplicationCallbackUrl { get; set; }
+
         public bool Enabled { get; set; }
 
         public bool UseCache { get; set; }

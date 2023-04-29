@@ -4,11 +4,13 @@ using DesertCamel.BaseMicroservices.SuperIdentity.Models;
 using DesertCamel.BaseMicroservices.SuperIdentity.Models.ClientService;
 using DesertCamel.BaseMicroservices.SuperIdentity.Services.ClientAuthorityService;
 using DesertCamel.BaseMicroservices.SuperIdentity.Services.ClientService;
+using DesertCamel.BaseMicroservices.SuperIdentity.Services.OauthService;
 using DesertCamel.BaseMicroservices.SuperIdentity.Services.PermissionService;
 using DesertCamel.BaseMicroservices.SuperIdentity.Services.ResourceService;
 using DesertCamel.BaseMicroservices.SuperIdentity.Services.RolePermissionService;
 using DesertCamel.BaseMicroservices.SuperIdentity.Services.RoleResourceService;
 using DesertCamel.BaseMicroservices.SuperIdentity.Services.RoleService;
+using DesertCamel.BaseMicroservices.SuperIdentity.Services.UserAuthService;
 using DesertCamel.BaseMicroservices.SuperIdentity.Services.UserPoolService;
 using DesertCamel.BaseMicroservices.SuperIdentity.Services.UserService;
 using Serilog;
@@ -40,6 +42,8 @@ namespace DesertCamel.BaseMicroservices.SuperIdentity
             services.AddScoped<IRolePermissionService, RolePermissionService>();
             services.AddScoped<IRoleResourceService, RoleResourceService>();
             services.AddScoped<IClientAuthorityService, ClientAuthorityService>();
+            services.AddScoped<IOauthService, OauthService>();
+            services.AddScoped<IUserAuthService, UserAuthService>();
             services.Configure<ClientConfig>(Configuration.GetSection(ClientConfig.ClientConfigSection));
 
             services.AddBootstrapBase(Configuration);
