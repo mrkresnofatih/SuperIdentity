@@ -19,6 +19,7 @@
             public const string USER_TOKEN_TYPE = "user";
             public const string CLIENT_TOKEN_TYPE = "client";
             public const string ACCESS_TOKEN = "accessToken";
+            public const string USER_POOL_ID = "userPoolId";
         }
     }
 }

@@ -6,5 +6,7 @@ namespace DesertCamel.BaseMicroservices.SuperIdentity.Services.ClientAuthService
     public interface IClientAuthService
     {
         Task<FuncResponse<ClientAuthTokenResponseModel>> Token(ClientAuthTokenRequestModel tokenRequest);
+
+        Task<FuncResponse<ClientAuthPermitResponseModel>> Permit(ClientAuthPermitRequestModel permitRequest);
     }
 }

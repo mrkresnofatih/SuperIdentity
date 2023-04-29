@@ -32,7 +32,7 @@ namespace DesertCamel.BaseMicroservices.SuperIdentity.Services.UserAuthService
 
         public async Task<FuncResponse<UserAuthenticationTokenResponseModel>> Token(UserAuthenticationTokenRequestModel tokenRequest)
         {
-            _logger.LogInformation($"Start UserAuthentication-Token w. data: {tokenRequest.ToJson()}");
+            _logger.LogInformation($"Start UserAuthentication-AccessToken w. data: {tokenRequest.ToJson()}");
             var getUserPoolResult = await _userPoolService.GetUserPool(new UserPoolGetRequestModel
             {
                 UserPoolId = tokenRequest.UserPoolId,
@@ -180,7 +180,8 @@ namespace DesertCamel.BaseMicroservices.SuperIdentity.Services.UserAuthService
             var tokenWrapperPayload = new Dictionary<string, string>
             {
                 { AppConstants.TokenConstants.TOKEN_TYPE, AppConstants.TokenConstants.USER_TOKEN_TYPE },
-                { AppConstants.TokenConstants.ACCESS_TOKEN, oauthTokenData.AccessToken }
+                { AppConstants.TokenConstants.ACCESS_TOKEN, oauthTokenData.AccessToken },
+                { AppConstants.TokenConstants.USER_POOL_ID, userPoolData.Id.ToString() }
             };
             var jsonTokenWrapperPayload = JsonConvert.SerializeObject(tokenWrapperPayload);
             if (jsonTokenWrapperPayload == null)
