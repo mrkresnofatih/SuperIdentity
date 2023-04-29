@@ -177,14 +177,37 @@ namespace DesertCamel.BaseMicroservices.SuperIdentity.Services.UserAuthService
                 }
             };
 
+            var tokenWrapperPayload = new Dictionary<string, string>
+            {
+                { AppConstants.TokenConstants.TOKEN_TYPE, AppConstants.TokenConstants.USER_TOKEN_TYPE },
+                { AppConstants.TokenConstants.ACCESS_TOKEN, oauthTokenData.AccessToken }
+            };
+            var jsonTokenWrapperPayload = JsonConvert.SerializeObject(tokenWrapperPayload);
+            if (jsonTokenWrapperPayload == null)
+            {
+                _logger.LogError("failed to generate token");
+                return new FuncResponse<UserAuthenticationTokenResponseModel>
+                {
+                    ErrorMessage = "failed to generate token"
+                };
+            }
+            var token = jsonTokenWrapperPayload.ToBase64Encode();
+            if (token == null)
+            {
+                _logger.LogError("failed to generate token");
+                return new FuncResponse<UserAuthenticationTokenResponseModel>
+                {
+                    ErrorMessage = "failed to generate token"
+                };
+            }
+
             _logger.LogInformation("success: token request processed");
             return new FuncResponse<UserAuthenticationTokenResponseModel>
             {
                 Data = new UserAuthenticationTokenResponseModel
                 {
                     ApplicationCallbackUrl = userPoolData.ApplicationCallbackUrl,
-                    Token = oauthTokenData.AccessToken,
-                    RefreshToken = oauthTokenData.RefreshToken
+                    Token = token,
                 }
             };
         }

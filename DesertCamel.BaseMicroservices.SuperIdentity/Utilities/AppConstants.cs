@@ -12,5 +12,13 @@
         {
             public const string POSTGRES = "PostgreSQL";
         }
+
+        public class TokenConstants
+        {
+            public const string TOKEN_TYPE = "tokenType";
+            public const string USER_TOKEN_TYPE = "user";
+            public const string CLIENT_TOKEN_TYPE = "client";
+            public const string ACCESS_TOKEN = "accessToken";
+        }
     }
 }

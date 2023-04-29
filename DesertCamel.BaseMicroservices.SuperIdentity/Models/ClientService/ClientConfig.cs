@@ -2,10 +2,10 @@
 {
     public class ClientConfig
     {
-        public const string ClientConfigSection = "ClientJwtSettings";
+        public const string ClientConfigSection = "ClientConfigurationSettings";
 
         public string Issuer { get; set; }
 
-        public string Secret { get; set; }
+        public string Code { get; set; }
     }
 }
