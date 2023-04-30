@@ -5,7 +5,9 @@ namespace DesertCamel.BaseMicroservices.SuperIdentity.Services.UserAuthService
 {
     public interface IUserAuthService
     {
-        Task<FuncResponse<UserAuthenticationTokenResponseModel>> Token(UserAuthenticationTokenRequestModel tokenRequest);
+        Task<FuncResponse<UserAuthTokenResponseModel>> Token(UserAuthTokenRequestModel tokenRequest);
+
+        Task<FuncResponse<UserAuthPermitResponseModel>> Permit(UserAuthPermitRequestModel permitRequest);
 
     }
 }

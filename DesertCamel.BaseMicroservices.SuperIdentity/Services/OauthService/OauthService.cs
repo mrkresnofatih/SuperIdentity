@@ -66,9 +66,49 @@ namespace DesertCamel.BaseMicroservices.SuperIdentity.Services.OauthService
 
         public async Task<FuncResponse<OauthUserInfoResponseModel>> UserInfo(OauthUserInfoRequestModel userInfoRequest)
         {
+            _logger.LogInformation($"Start UserInfo w. data: {userInfoRequest.ToJson()}");
+            var userInfoCacheResult = await _UserInfoCache(userInfoRequest);
+            if (userInfoCacheResult.IsError())
+            {
+                var userInfoApiResult = await _UserInfoApi(userInfoRequest);
+                if (userInfoApiResult.IsError())
+                {
+                    _logger.LogError(userInfoApiResult.ErrorMessage);
+                    return new Models.FuncResponse<OauthUserInfoResponseModel>
+                    {
+                        ErrorMessage = "Failed to get user info cache/api"
+                    };
+                }
+                // store in cache
+                _logger.LogInformation("success: get user info from api");
+                return new FuncResponse<OauthUserInfoResponseModel>
+                {
+                    Data = userInfoApiResult.Data
+                };
+            }
+            _logger.LogInformation("success: get user info from cache");
+            return new FuncResponse<OauthUserInfoResponseModel>
+            {
+                Data = userInfoCacheResult.Data
+            };
+        }
+
+        private async Task<FuncResponse<OauthUserInfoResponseModel>> _UserInfoCache(OauthUserInfoRequestModel userInfoRequest)
+        {
+            _logger.LogInformation($"Start _UserInfoCache w. data: {userInfoRequest.ToJson()}");
+
+            _logger.LogInformation("success get user info cache");
+            return new FuncResponse<OauthUserInfoResponseModel>
+            {
+                ErrorMessage = "not implemented yet"
+            };
+        }
+
+        private async Task<FuncResponse<OauthUserInfoResponseModel>> _UserInfoApi(OauthUserInfoRequestModel userInfoRequest)
+        {
             try
             {
-                _logger.LogInformation($"Start UserInfo w. data: {userInfoRequest.ToJson()}");
+                _logger.LogDebug($"Start _UserInfoApi w. data: {userInfoRequest.ToJson()}");
                 var httpClient = new HttpClient();
 
                 var request = new HttpRequestMessage(HttpMethod.Get, userInfoRequest.UserInfoUrl);
@@ -94,10 +134,10 @@ namespace DesertCamel.BaseMicroservices.SuperIdentity.Services.OauthService
                     Data = data
                 };
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 _logger.LogError(e, "failed userinfo");
-                return new FuncResponse<OauthUserInfoResponseModel>
+                return new Models.FuncResponse<OauthUserInfoResponseModel>
                 {
                     ErrorMessage = "failed to get userinfo"
                 };

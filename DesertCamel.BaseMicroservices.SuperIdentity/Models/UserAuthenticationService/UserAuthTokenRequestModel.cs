@@ -2,7 +2,7 @@
 
 namespace DesertCamel.BaseMicroservices.SuperIdentity.Models.UserAuthenticationService
 {
-    public class UserAuthenticationTokenRequestModel
+    public class UserAuthTokenRequestModel
     {
         [Required]
         public string Code { get; set; }

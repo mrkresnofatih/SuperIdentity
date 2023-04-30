@@ -1,6 +1,6 @@
 ﻿namespace DesertCamel.BaseMicroservices.SuperIdentity.Models.UserAuthenticationService
 {
-    public class UserAuthenticationTokenResponseModel
+    public class UserAuthTokenResponseModel
     {
         public string Token { get; set; }
 

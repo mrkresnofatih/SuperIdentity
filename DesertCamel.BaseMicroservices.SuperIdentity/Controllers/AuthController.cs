@@ -39,7 +39,7 @@ namespace DesertCamel.BaseMicroservices.SuperIdentity.Controllers
         }
 
         [HttpPost("user-token")]
-        public async Task<FuncResponse<UserAuthenticationTokenResponseModel>> UserToken(UserAuthenticationTokenRequestModel tokenRequest)
+        public async Task<FuncResponse<UserAuthTokenResponseModel>> UserToken(UserAuthTokenRequestModel tokenRequest)
         {
             _logger.LogDebug($"start User-AccessToken Endpoint w. data: {tokenRequest.ToJson()}");
             return await _userAuthService.Token(tokenRequest);
